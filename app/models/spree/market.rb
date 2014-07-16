@@ -36,6 +36,8 @@ module Spree
       end
 
       def register(params)
+        return if find(params[:code])
+
         market = Market.new(*params.values_at(:code, :name, :alternative_codes, :currencies, :default_locale))
         market.register_currencies
 
