@@ -1,6 +1,6 @@
 module Spree
 
-  class Market < Struct.new(:code, :name, :alternative_codes, :currencies, :default_locale)
+  class Market < Struct.new(:code, :name, :alternative_codes, :currencies, :default_locale, :default)
 
     def register_currencies
       currencies.each do |currency_code|
@@ -32,13 +32,13 @@ module Spree
     class << self
 
       def default
-        markets.try(:first)
+        markets.find(&:default) || markets.first
       end
 
       def register(params)
         return if find(params[:code])
 
-        market = Market.new(*params.values_at(:code, :name, :alternative_codes, :currencies, :default_locale))
+        market = Market.new(*params.values_at(:code, :name, :alternative_codes, :currencies, :default_locale, :default))
         market.register_currencies
 
         markets << market
@@ -54,6 +54,16 @@ module Spree
       def find(code)
         markets.find{ |m| m.code.upcase == code.upcase }
       end
+
+      def find_by_country(country)
+        if country.respond_to? :each
+          until market = find_by_country(country.shift) or country.empty? do end
+          market
+        else
+          markets.find{ |m| m.code.upcase == country.upcase || m.alternative_codes.map(&:upcase).include?(country) }
+        end
+      end
+      alias_method :find_by_countries, :find_by_country
 
       private
 

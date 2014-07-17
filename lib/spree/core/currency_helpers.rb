@@ -26,5 +26,18 @@ module Spree
 
     end
 
+    def set_current_market_by_country(countries)
+      if session[:market].blank?
+        market = Market.find_by_countries(countries) || Market.default
+
+        @current_market = market.code
+        @current_currency = market.available_currencies.first
+
+        session[:market] = @current_market
+        session[:currency] = @current_currency
+        session[:locale] = market.default_locale
+      end
+    end
+
   end
 end
