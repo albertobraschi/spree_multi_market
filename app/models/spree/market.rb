@@ -65,8 +65,6 @@ module Spree
       end
       alias_method :find_by_countries, :find_by_country
 
-      private
-
       def markets
         SpreeMultiMarket::Markets
       end
