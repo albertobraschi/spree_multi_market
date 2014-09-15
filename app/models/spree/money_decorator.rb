@@ -4,9 +4,8 @@ unless Spree::Money.private_instance_methods.include? :old_initialize
     alias_method :old_initialize, :initialize
 
     def initialize(amount, options={})
+      options[:currency] = options[:currency].split('-').first if options[:currency].present?
       old_initialize(amount, options)
-
-      @money = Monetize.parse(amount.to_s, (options[:currency] || Spree::Config[:currency]))
     end
 
   end
