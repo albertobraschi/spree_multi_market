@@ -22,6 +22,7 @@ module Spree
         session[:market] = @current_market.code
         session[:currency] = @current_currency
         session[:locale] = market.default_locale
+        I18n.locale = market.default_locale
 
       end
 
@@ -37,6 +38,7 @@ module Spree
         session[:market] = @current_market.code
         session[:currency] = @current_currency
         session[:locale] = market.default_locale
+        I18n.locale = market.default_locale
       end
     end
 
